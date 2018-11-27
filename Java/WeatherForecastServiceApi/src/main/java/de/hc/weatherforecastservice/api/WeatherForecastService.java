@@ -13,6 +13,8 @@ import de.hc.commons.property.Property;
  */
 public interface WeatherForecastService {
     
+    public static final int TOMORROW = 0;
+    
     public Property<Integer> getCloudiness(int day);
     public Property<Double> getTemperature(int day);
 

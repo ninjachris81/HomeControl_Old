@@ -3,7 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hc.serialcomm;
+package de.hc.commons.protocol.ascii;
+
+import de.hc.commons.protocol.AbstractProtocol;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -12,13 +21,22 @@ package de.hc.serialcomm;
  */
 public class SimpleAsciiProtocol extends AbstractProtocol {
     
+    private final static String DATAGRAM_SEPARATOR = "\r\n";
+
     private String bufferData = "";
 
-    static String DATAGRAM_SEPARATOR = "\r\n";
     boolean isFirstParse = true;
+    private InputStream in;
+    private PipedOutputStream writeBuffer;
     
     public SimpleAsciiProtocol(DatagramProcessor datagramProcessor) {
         super(datagramProcessor);
+        this.writeBuffer = new PipedOutputStream();
+        try {
+            this.in = new PipedInputStream(writeBuffer);
+        } catch (IOException ex) {
+            Logger.getLogger(SimpleAsciiProtocol.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -90,6 +108,22 @@ public class SimpleAsciiProtocol extends AbstractProtocol {
                 return -1;
         }
         
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return this.in;
+    }
+
+    @Override
+    public int writeData(byte[] data) {
+        try {
+            this.writeBuffer.write(data);
+            return data.length;
+        } catch (IOException ex) {
+            Logger.getLogger(SimpleAsciiProtocol.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
     }
 
     public enum DATA_TYPE {

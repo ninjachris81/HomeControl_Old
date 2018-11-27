@@ -64,8 +64,6 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>de.hc.commons.Activator</Bundle-Activator>
-                        <Export-Package>de.hc.commons.config,de.hc.commons.log,de.hc.commons.property,de.hc.commons.sensor</Export-Package>
-                        <Private-Package>de.hc.commons.*,tests.*</Private-Package>
                     </instructions>
                 </configuration>
             </plugin>

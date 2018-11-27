@@ -68,13 +68,27 @@ public class BundleSupervisor {
                         public void onFileChange(File file) {
                             if (file.getName().endsWith(".jar")) {
                                 try {
-                                    System.out.println("Updating bundle " + file.getAbsolutePath());
+                                    System.out.println("(UPDATE) Updating bundle " + file.getAbsolutePath());
                                     bundle.update();
                                 } catch (BundleException ex) {
                                     Logger.getLogger(BundleSupervisor.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
                         }
+
+                        @Override
+                        public void onFileCreate(File file) {
+                            if (file.getName().endsWith(".jar")) {
+                                try {
+                                    System.out.println("(CREATE) Updating bundle " + file.getAbsolutePath());
+                                    bundle.update();
+                                } catch (BundleException ex) {
+                                    Logger.getLogger(BundleSupervisor.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                        
+                        
                     });
                     
                     long lastModified = new File(bundlePath).lastModified();

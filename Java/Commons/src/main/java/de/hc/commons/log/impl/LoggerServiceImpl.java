@@ -76,4 +76,12 @@ public class LoggerServiceImpl implements LoggerService {
         if (logService!=null) logService.log(getLogServiceLevel(level), msg);
     }
 
+    public void configError(String... keys) {
+        String msg = "Missing config keys: ";
+        for (String key : keys) msg+=key + " ";
+        msg = msg.trim();
+        if (printOutput) System.out.println(msg);
+        if (logService!=null) logService.log(LogService.LOG_WARNING, msg);
+    }
+
 }

@@ -5,6 +5,7 @@
  */
 package de.hc.sensorinterface.rest;
 
+import de.hc.sensormanagerservice.api.SensorId;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,8 +26,9 @@ public class SensorOutputResource {
     @Path("/{sensorName}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getValue(@PathParam("sensorName") String sensorName) {
-        if (srh.getSensorManagerService().sensorExists(sensorName)) {
-            srh.getSensorManagerService().getValue(sensorName);
+        SensorId sId = srh.getSensorManagerService().sensorExists(sensorName);
+        if (sId!=null) {
+            srh.getSensorManagerService().getValue(sId);
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();

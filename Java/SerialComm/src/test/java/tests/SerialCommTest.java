@@ -5,9 +5,10 @@
  */
 package tests;
 
-import de.hc.serialcomm.AbstractProtocol;
-import de.hc.serialcomm.SerialConnector;
-import de.hc.serialcomm.SimpleAsciiProtocol;
+import de.hc.commons.protocol.AbstractProtocol;
+import de.hc.serialcomm.SerialConnection;
+import de.hc.commons.protocol.ascii.SimpleAsciiProtocol;
+import de.hc.serialcomm.SerialConnectionDetails;
 import java.io.File;
 import java.lang.reflect.Field;
 import org.apache.commons.lang.SystemUtils;
@@ -57,9 +58,9 @@ public class SerialCommTest {
         SimpleAsciiProtocol simpleProtocol;
         simpleProtocol = new SimpleAsciiProtocol(datagramProcessor);
 
-        SerialConnector sc = new SerialConnector(simpleProtocol);
-
-        sc.connect("COM5", 115200, false, true);
+        SerialConnection sc = new SerialConnection();
+        SerialConnectionDetails details = new SerialConnectionDetails("COM5", 115200, false, true, simpleProtocol);
+        sc.connect(details);
 
         while (true) {
             Thread.sleep(2000);

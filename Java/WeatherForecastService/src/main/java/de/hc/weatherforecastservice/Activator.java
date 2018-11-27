@@ -12,10 +12,10 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         ConfigurationHelper.createDefaultConfiguration(PID, new DefaultConfigurationHandler() {
             public void getDefaultConfiguration(Dictionary dict) {
-                dict.put("apiKey", "");
-                dict.put("url", "");
-                dict.put("forecastCount", "3");
-                dict.put("intervalSec", "600");
+                dict.put(OpenWeatherMapService.KEY_API_KEY, "");
+                dict.put(OpenWeatherMapService.KEY_URL, "");
+                dict.put(OpenWeatherMapService.KEY_FORECAST_COUNT, "3");
+                dict.put(OpenWeatherMapService.KEY_INTERVAL_SEC, "600");
             }
         }, context);
     }

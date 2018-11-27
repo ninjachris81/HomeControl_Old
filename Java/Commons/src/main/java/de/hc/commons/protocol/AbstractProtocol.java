@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hc.serialcomm;
+package de.hc.commons.protocol;
+
+import java.io.InputStream;
 
 /**
  *
@@ -15,7 +17,11 @@ public abstract class AbstractProtocol<DATAGRAM extends AbstractProtocol.IDatagr
     protected DatagramProcessor<DATAGRAM> datagramProcessor;
     
     public abstract void nextIncomingData(byte[] data);
+
+    public abstract InputStream getInputStream();
     
+    public abstract int writeData(byte[] data);
+
     public interface DatagramProcessor<DATAGRAM extends IDatagram> {
         void onNewDatagram(DATAGRAM datagram);
     }

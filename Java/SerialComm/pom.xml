@@ -59,8 +59,6 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>de.hc.serialcomm.Activator</Bundle-Activator>
-                        <Export-Package>de.hc.serialcomm</Export-Package>
-                        <Private-Package>de.hc.serialcomm.*,tests.*</Private-Package>
                         <Bundle-ClassPath>.,lib/RXTXcomm.jar</Bundle-ClassPath>
                         <Include-Resource>lib/RXTXcomm.jar=lib/RXTXcomm.jar</Include-Resource>
                     </instructions>

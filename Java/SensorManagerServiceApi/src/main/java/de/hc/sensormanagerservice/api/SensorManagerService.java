@@ -12,10 +12,18 @@ package de.hc.sensormanagerservice.api;
 
 public interface SensorManagerService {
     
-    public boolean sensorExists(String sensorName);
+    public enum ConnectionType {
+        SERIAL
+    }
     
-    public void setValue(String sensorName, Comparable value);
+    public boolean sensorExists(SensorId sensor);
     
-    public Comparable getValue(String sensorName);
+    public SensorId sensorExists(String sensorName);
+
+    public void setValue(SensorId sensor, Comparable value);
+    
+    public Comparable getValue(SensorId sensor);
+    
+    public boolean registerSensor(SensorId sId, ConnectionType type, String connectionPort);
     
 }

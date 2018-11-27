@@ -24,5 +24,7 @@ public interface LoggerService {
     public void log(Level level, String msg, Throwable thrown);
 
     public void log(Level level, String msg);
+    
+    public void configError(String... keys);
 
 }

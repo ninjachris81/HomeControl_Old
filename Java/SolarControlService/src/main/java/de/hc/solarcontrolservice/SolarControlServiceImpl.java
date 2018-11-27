@@ -8,6 +8,7 @@ package de.hc.solarcontrolservice;
 import de.hc.commons.log.LoggerService;
 import de.hc.commons.property.IPropertyValueChangeListener;
 import de.hc.commons.property.Property;
+import de.hc.commons.sensor.FallbackSensorInput;
 import de.hc.solarcontrolservice.api.SolarControlService;
 import de.hc.weatherforecastservice.api.WeatherForecastService;
 import org.apache.felix.ipojo.annotations.Component;
@@ -26,22 +27,19 @@ import org.apache.felix.ipojo.annotations.Validate;
 @Instantiate
 public class SolarControlServiceImpl implements SolarControlService {
 
-    //@Reference(cardinality=ReferenceCardinality.MANDATORY_MULTIPLE, bind="bind", unbind="unbind", referenceInterface = WeatherForecastService.class,policy = ReferencePolicy.STATIC)
-    //List<WeatherForecastService> list;
     @Requires
     WeatherForecastService wfs;
 
     @Requires
     LoggerService loggerService;
-
-    Property<Double> temp;
+    
+    private FallbackSensorInput<Integer> brightnessSensor;
 
     @Validate
     private void start() {
         loggerService.debug("Started solar control service");
 
-        temp = wfs.getTemperature(0);
-        temp.addValueChangeListener(new IPropertyValueChangeListener<Double>() {
+        wfs.getTemperature(WeatherForecastService.TOMORROW).addValueChangeListener(new IPropertyValueChangeListener<Double>() {
             public void valueChanged(Double value) {
                 loggerService.info("Temperature changed: " + value);
             }

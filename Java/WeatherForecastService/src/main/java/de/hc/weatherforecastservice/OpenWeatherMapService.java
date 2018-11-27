@@ -5,10 +5,9 @@
  */
 package de.hc.weatherforecastservice;
 
-import de.hc.commons.config.ConfigurationHelper;
-import de.hc.commons.config.DefaultConfigurationHandler;
 import de.hc.commons.log.LoggerService;
 import de.hc.commons.property.Property;
+import de.hc.commons.utils.StringUtils;
 import de.hc.weatherforecastservice.api.WeatherForecastService;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +18,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,28 +46,30 @@ import org.osgi.service.cm.ConfigurationException;
 public class OpenWeatherMapService implements WeatherForecastService {
 
     public static final String PID = "de.hc.weatherforecastservice.OpenWeatherMapService";
-
-    //private static final int FORECAST_COUNT = 3;
-    //private static final int INTERVAL_SEC = 60 * 10;
     
+    public static final String KEY_API_KEY = "apiKey";
+    public static final String KEY_URL = "url";
+    public static final String KEY_FORECAST_COUNT = "forecastCount";
+    public static final String KEY_INTERVAL_SEC = "intervalSec";
+
     private List<Property<Integer>> cloudinesses;
     private List<Property<Double>> temperatures;
 
-    private ScheduledExecutorService executorService;
+    private final ScheduledExecutorService executorService;
 
     @Requires
     LoggerService logService;
 
-    @org.apache.felix.ipojo.annotations.Property(name = "apiKey", value="", mandatory = true)
+    @org.apache.felix.ipojo.annotations.Property(name = KEY_API_KEY, value="", mandatory = true)
     private String key_apiKey;
 
-    @org.apache.felix.ipojo.annotations.Property(name = "url", value="", mandatory = true)
+    @org.apache.felix.ipojo.annotations.Property(name = KEY_URL, value="", mandatory = true)
     private String key_url;
 
-    @org.apache.felix.ipojo.annotations.Property(name = "forecastCount")
+    @org.apache.felix.ipojo.annotations.Property(name = KEY_FORECAST_COUNT)
     private int key_forecastCount;
 
-    @org.apache.felix.ipojo.annotations.Property(name = "intervalSec")
+    @org.apache.felix.ipojo.annotations.Property(name = KEY_INTERVAL_SEC)
     private int key_intervalSec;
 
     public OpenWeatherMapService(BundleContext bundleContext) {
@@ -84,7 +84,7 @@ public class OpenWeatherMapService implements WeatherForecastService {
                 temperatures.add(new Property((double) -1));
             }
         } else {
-            logService.warning("Invalid forecast count !");
+            logService.configError(KEY_FORECAST_COUNT);
         }
 
         executorService = Executors.newSingleThreadScheduledExecutor();
@@ -102,7 +102,7 @@ public class OpenWeatherMapService implements WeatherForecastService {
                 }
             }, 0, key_intervalSec, TimeUnit.SECONDS);
         } else {
-            logService.warning("Invalid interval !");
+            logService.configError(KEY_INTERVAL_SEC);
         }
     }
 
@@ -113,16 +113,18 @@ public class OpenWeatherMapService implements WeatherForecastService {
 
     @Override
     public Property<Integer> getCloudiness(int day) {
+        if (day>=key_forecastCount) return null;
         return cloudinesses.get(day);
     }
 
     @Override
     public Property<Double> getTemperature(int day) {
+        if (day>=key_forecastCount) return null;
         return temperatures.get(day);
     }
 
     private void refreshData() {
-        if (key_apiKey!=null && !key_apiKey.isEmpty()) {
+        if (!StringUtils.isNullOrEmpty(key_apiKey) && !StringUtils.isNullOrEmpty(key_url)) {
             try {
                 logService.info("Refreshing weather data");
 
@@ -152,7 +154,7 @@ public class OpenWeatherMapService implements WeatherForecastService {
                 Logger.getLogger(OpenWeatherMapService.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            logService.warning("API_KEY not configured");
+            logService.configError(KEY_API_KEY, KEY_URL);
         }
     }
 
